@@ -327,7 +327,9 @@ export default class VideoPlayer extends Component {
   }
 
   seek(t) {
-    this.player.seek(t);
+    if (this.player !== undefined) {
+      this.player.seek(t);
+    }
   }
 
   stop() {
@@ -495,6 +497,8 @@ export default class VideoPlayer extends Component {
           onLoad={this.onLoad}
           source={video}
           resizeMode={resizeMode}
+          bufferConfig={this.props.bufferConfig}
+          useTextureView
         />
         <View
           style={[
@@ -515,8 +519,7 @@ export default class VideoPlayer extends Component {
             }}
           />
         </View>
-        {((!this.state.isPlaying) || this.state.isControlsVisible)
-          ? this.renderControls() : this.renderSeekBar(true)}
+        {this.renderSeekBar(true)}
       </View>
     );
   }
@@ -543,7 +546,7 @@ export default class VideoPlayer extends Component {
   render() {
     return (
       <View onLayout={this.onLayout} style={this.props.customStyles.wrapper}>
-        {this.renderContent()}
+        {this.renderVideo()}
       </View>
     );
   }
@@ -553,6 +556,7 @@ VideoPlayer.propTypes = {
   video: Video.propTypes.source,
   thumbnail: Image.propTypes.source,
   endThumbnail: Image.propTypes.source,
+  bufferConfig: PropTypes.object,
   videoWidth: PropTypes.number,
   videoHeight: PropTypes.number,
   duration: PropTypes.number,
@@ -611,4 +615,5 @@ VideoPlayer.defaultProps = {
   pauseOnPress: false,
   fullScreenOnLongPress: false,
   customStyles: {},
+  bufferConfig: {},
 };
